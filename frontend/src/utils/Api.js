@@ -21,7 +21,8 @@ class Api {
 
   //Метод формирования запроса данных профиля
   getProfileData() {
-    const path = `${this._server}/${this._group}/${this._profileDataPath}`;
+    /* const path = `${this._server}/${this._group}/${this._profileDataPath}`; */
+    const path = `${this._server}/${this._profileDataPath}`;
     return this._requestServer(path);
   }
 

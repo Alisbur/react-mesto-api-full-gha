@@ -6,6 +6,7 @@ const { PORT = 3000 } = process.env;
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { celebrate, Joi, errors } = require('celebrate');
+const cors = require('cors');
 const { login, createUser } = require('./controllers/user');
 const auth = require('./middlewares/auth');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
@@ -15,6 +16,7 @@ const NotFoundError = require('./errors/not-found-error');
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 
 const app = express();
+app.use(cors());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

@@ -10,7 +10,7 @@ export const validationConfig = {
 
 //Данные для api связи с сервером
 export const connectionConfig = {
-  server: 'https://mesto.nomoreparties.co/v1',
+  server: 'http://51.250.27.222:3000',
   profileDataPath : 'users/me',
   cardsDataPath : 'cards',
   token : '6190affa-5b62-40b0-ae29-11fd0f040107',
@@ -18,7 +18,7 @@ export const connectionConfig = {
 };
 
 export const authConfig = {
-  server: 'https://auth.nomoreparties.co',
+  server: 'http://51.250.27.222:3000',
   registerPath : 'signup',
   loginPath : 'signin',
   authCheckPath : 'users/me',
