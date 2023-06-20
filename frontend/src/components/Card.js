@@ -5,9 +5,9 @@ function Card(props) {
   //Создаём переменную контекста
   const currentUser = React.useContext(CurrentUserContext);
   //Проверяем принадлежит ли карточка пользователю
-  const isOwn = props.card.owner._id === currentUser._id;
+  const isOwn = props.card.owner === currentUser._id;
   //Проверяем ставил ли пользователь лайк 
-  const isLiked = props.card.likes.some(i => i._id === currentUser._id);
+  const isLiked = props.card.likes.some(i => i === currentUser._id);
 
   //Обработчик клика по карточке. Вызов функции из props  
   function handleClick() {

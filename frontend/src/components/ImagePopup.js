@@ -1,8 +1,8 @@
 function ImagePopup(props) {
 
   return (
-    <div className={`popup popup_high-opacity image-popup popup_transition ${props.selectedCard.link ? 'popup_opened' : ''}`}>
-      <div className="popup__image-container">
+    <div className={`popup popup_high-opacity image-popup popup_transition ${props.selectedCard.link ? 'popup_opened' : ''}`} onMouseDown={props.onClose}>
+      <div className="popup__image-container" onMouseDown={ (e)=>{e.stopPropagation()} }>
         <img src={props.selectedCard.link} className="popup__image" alt={props.selectedCard.name} />
         <button type="button" onClick={ props.onClose } className="popup__exit-button link-transparency" name="closeBtn"
           aria-label="Закрыть окно"></button>

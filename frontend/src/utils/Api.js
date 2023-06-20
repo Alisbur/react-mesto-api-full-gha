@@ -10,7 +10,7 @@ class Api {
   }
 
   //Метод отправки запроса к серверу
-  _requestServer(path, message = {headers: {authorization: this._token}}) {
+  _requestServer(path, message) {
     return fetch(path, message)
       .then((res) => {
         if (res.ok) 
@@ -21,18 +21,17 @@ class Api {
 
   //Метод формирования запроса данных профиля
   getProfileData() {
-    /* const path = `${this._server}/${this._group}/${this._profileDataPath}`; */
     const path = `${this._server}/${this._profileDataPath}`;
     return this._requestServer(path);
   }
 
   //Метод формирования запроса для изменения данных профиля  
-  modifyProfileData( {name, about} ) {
-    const path = `${this._server}/${this._group}/${this._profileDataPath}`;
+  modifyProfileData({ name, about }, token) {
+    const path = `${this._server}/${this._profileDataPath}`;
     const message = { 
       method: 'PATCH',
       headers: {
-        authorization: this._token,
+        authorization: `Bearer ${token}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
@@ -44,12 +43,12 @@ class Api {
   }
 
   //Метод формирования запроса для изменения аватара
-  setUserAvatar( {link} ) {
-    const path = `${this._server}/${this._group}/${this._profileDataPath+"/avatar"}`;
+  setUserAvatar({ link }, token) {
+    const path = `${this._server}/${this._profileDataPath+"/avatar"}`;
     const message = { 
       method: 'PATCH',
       headers: {
-        authorization: this._token,
+        authorization: `Bearer ${token}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
@@ -60,18 +59,18 @@ class Api {
   }
 
   //Метод формирования запроса базы карточек
-  getInitialCards() {
-    const path = `${this._server}/${this._group}/${this._cardsDataPath}`;
-    return this._requestServer(path);
+  getInitialCards(token) {
+    const path = `${this._server}/${this._cardsDataPath}`;
+    return this._requestServer(path, {headers: {authorization: `Bearer ${token}`}});
   }
 
   //Метод формирования запроса на добавление карточки
-  addNewCard({ name, link }) {
-    const path = `${this._server}/${this._group}/${this._cardsDataPath}`;
+  addNewCard({ name, link }, token) {
+    const path = `${this._server}/${this._cardsDataPath}`;
     const message = { 
       method: 'POST',
       headers: {
-        authorization: this._token,
+        authorization: `Bearer ${token}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
@@ -83,46 +82,24 @@ class Api {
   }
 
   //Метод формирования запроса для установки или снятия лайка
-  changeLikeCardStatus(cardId, isLiked) {
-    const path = `${this._server}/${this._group}/${this._cardsDataPath}/${cardId+"/likes"}`;
+  changeLikeCardStatus(cardId, isLiked, token) {
+    const path = `${this._server}/${this._cardsDataPath}/${cardId+"/likes"}`;
     const action = isLiked ? 'DELETE' : 'PUT';
     const message = { 
       method: action,
       headers: {
-        authorization: this._token,
-      }}
-    return this._requestServer(path, message);
-  }
-
-  //Метод формирования запроса для установки лайка
-  putLike(cardId) {
-    const path = `${this._server}/${this._group}/${this._cardsDataPath}/${cardId+"/likes"}`;
-    const message = { 
-      method: 'PUT',
-      headers: {
-        authorization: this._token,
-      }}
-    return this._requestServer(path, message);
-  }
-
-  //Метод формирования запроса удаления лайка
-  deleteLike(cardId) {
-    const path = `${this._server}/${this._group}/${this._cardsDataPath}/${cardId+"/likes"}`;
-    const message = { 
-      method: 'DELETE',
-      headers: {
-        authorization: this._token,
+        authorization: `Bearer ${token}`,
       }}
     return this._requestServer(path, message);
   }
 
   //Метод формирования запроса для удаления карточки
-  deleteCard(cardId) {
-    const path = `${this._server}/${this._group}/${this._cardsDataPath}/${cardId}`;
+  deleteCard(cardId, token) {
+    const path = `${this._server}/${this._cardsDataPath}/${cardId}`;
     const message = { 
       method: 'DELETE',
       headers: {
-        authorization: this._token,
+        authorization: `Bearer ${token}`,
       }}
     return this._requestServer(path, message);
   }

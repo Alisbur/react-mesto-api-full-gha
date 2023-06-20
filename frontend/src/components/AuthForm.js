@@ -27,7 +27,7 @@ function AuthForm(props) {
             <span className={`popup__input-error ${!isValid ? "popup__input-error_visible" : "" }`}>{errors.email}</span>
           </fieldset>
           <fieldset className="sign__fieldset">
-            <input type="password" value={values.password ? values.password : ""} onChange={handleChange} className="sign__input" placeholder="Пароль" name="password" required minLength="5" maxLength="40" autoComplete="new-password" />
+            <input type="password" value={values.password ? values.password : ""} onChange={handleChange} className="sign__input" placeholder="Пароль" name="password" required minLength="4" maxLength="40" autoComplete="new-password" />
             <span className={`popup__input-error ${!isValid ? "popup__input-error_visible" : "" }`}>{errors.password}</span>
           </fieldset>
           <button type="submit" className={`sign__submit-button ${!isValid ? "sign__submit-button_inactive" : ""}`} name="submitBtn" disabled={!isValid}>{props.submitBtnCap}</button>

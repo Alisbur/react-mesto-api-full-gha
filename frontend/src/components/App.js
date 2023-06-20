@@ -30,7 +30,7 @@ function App() {
   const [isConfirmPopupOpen, setIsConfirmPopupOpen] = useState(false);
   const [isInfoTooltipOpen, setInfoTooltipOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState({ name: '', link: '' });
-  const [currentUser, setCurrentUser] = useState({ name: '', about: '', avatar: '' });
+  const [currentUser, setCurrentUser] = useState({ name: '', about: '', avatar: '', _id: '' });
   const [cards, setCards] = useState([]);
   const [cardToDelete, setCardToDelete] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -38,26 +38,14 @@ function App() {
   const [isLoggedUp, setIsLoggedUp] = useState(false);
   const [page, setPage] = useState('');
   const [email, setEmail] = useState('');
-
-  //Получаем с сервера данные пользователя
-  React.useEffect(function () {
-    if (isLoggedIn) {
-      api.getProfileData()
-        .then((data) => {
-          setCurrentUser(data);
-        })
-        .catch((err) => {
-          alert(`Не удалось загрузить данные профиля! Ошибка: ${err}`);
-        });
-    }
-  }, [isLoggedIn]);
+  const [token, setToken] = useState('');
 
   //Получаем с сервера данные карточек
   React.useEffect(function () {
     if (isLoggedIn) {
-      api.getInitialCards()
-        .then((data) => {
-          setCards(data)
+      api.getInitialCards(token)
+        .then(({data}) => {
+          setCards(data);
         })
         .catch((err) => {
           alert(`Не удалось загрузить данные карточек! Ошибка: ${err}`);
@@ -120,10 +108,10 @@ function App() {
 
   //Обработчик клика по лайку 
   function handleCardLike(card) {
-    const isLiked = card.likes.some(i => i._id === currentUser._id);
-    api.changeLikeCardStatus(card._id, isLiked)
-      .then((newCard) => {
-        setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
+    const isLiked = card.likes.some(i => i === currentUser._id);
+    api.changeLikeCardStatus(card._id, isLiked, token)
+      .then(({ data }) => {
+        setCards((state) => state.map((c) => c._id === card._id ? data : c));
       })
       .catch((err) => {
         alert(`Не удалось поставить лайк! Ошибка: ${err}`);
@@ -139,7 +127,7 @@ function App() {
   //Обработчик удаления карточки после подтверждения в соответствующем попапе
   function handleConfirmCardDelete() {
     setIsSaving(true);
-    api.deleteCard(cardToDelete._id)
+    api.deleteCard(cardToDelete._id, token)
       .then((newCard) => {
         setCards((state) => state.filter((c) => c._id !== cardToDelete._id));
         closeAllPopups();
@@ -153,9 +141,9 @@ function App() {
   //Обработчик сохранения новых данных пользователя на сервере
   function handleUpdateUser(newUserData) {
     setIsSaving(true);
-    api.modifyProfileData(newUserData)
-      .then((data) => {
-        setCurrentUser(data);
+    api.modifyProfileData(newUserData, token)
+      .then(({ data }) => {
+        setCurrentUser({...currentUser, name: data.name, about: data.about });
         closeAllPopups();
       })
       .catch((err) => {
@@ -167,9 +155,9 @@ function App() {
   //Обработчик сохранения новых данных аватара на сервере
   function handleUpdateAvatar(newLink) {
     setIsSaving(true);
-    api.setUserAvatar(newLink)
-      .then((data) => {
-        setCurrentUser(data);
+    api.setUserAvatar(newLink, token)
+      .then(({ data }) => {
+        setCurrentUser({ ...currentUser, avatar: data.avatar });
         closeAllPopups();
       })
       .catch((err) => {
@@ -181,8 +169,8 @@ function App() {
   //Обработчик сохранения новой карточки места на сервере  
   function handleAddPlaceSubmit(newPlaceData) {
     setIsSaving(true);
-    api.addNewCard(newPlaceData)
-      .then((data) => {
+    api.addNewCard(newPlaceData, token)
+      .then(({ data }) => {
         setCards([data, ...cards]);
         closeAllPopups();
       })
@@ -222,6 +210,7 @@ function App() {
   function handleLogout() {
     localStorage.removeItem('token');
     setIsLoggedIn(false);
+    setToken('');
     setEmail('');
     navigate("/sign-in", {replace:true});
   }    
@@ -233,7 +222,9 @@ function App() {
       auth.authCheck(jwt)
         .then(({data}) => {
           setIsLoggedIn(true);
+          setToken(jwt);
           setEmail(data.email);
+          setCurrentUser({ name: data.name, about: data.about, avatar: data.avatar, _id: data._id });
           navigate("/cards", {replace:true});
         })
         .catch((err) => {
