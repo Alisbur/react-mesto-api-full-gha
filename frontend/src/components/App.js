@@ -41,25 +41,29 @@ function App() {
 
   //Получаем с сервера данные пользователя
   React.useEffect(function () {
-    api.getProfileData()
-      .then((data) => {
-        setCurrentUser(data);
-      })
-      .catch((err) => {
-        alert(`Не удалось загрузить данные профиля! Ошибка: ${err}`);
-      });
-  }, []);
+    if (isLoggedIn) {
+      api.getProfileData()
+        .then((data) => {
+          setCurrentUser(data);
+        })
+        .catch((err) => {
+          alert(`Не удалось загрузить данные профиля! Ошибка: ${err}`);
+        });
+    }
+  }, [isLoggedIn]);
 
   //Получаем с сервера данные карточек
   React.useEffect(function () {
-    api.getInitialCards()
-      .then((data) => {
-        setCards(data)
-      })
-      .catch((err) => {
-        alert(`Не удалось загрузить данные карточек! Ошибка: ${err}`);
-      });
-  }, []);
+    if (isLoggedIn) {
+      api.getInitialCards()
+        .then((data) => {
+          setCards(data)
+        })
+        .catch((err) => {
+          alert(`Не удалось загрузить данные карточек! Ошибка: ${err}`);
+        });
+    }
+  }, [isLoggedIn]);
 
   //Добавляем лисенер нажатия на кнопки для закрытия попапов по Esc 
   React.useEffect(() => {
