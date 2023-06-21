@@ -9,7 +9,7 @@
 
 ## Ссылки на проект
 
-IP-адрес x.x.x.x
+IP-адрес 51.250.27.222
 
 Frontend https://alisbur.nomoredomains.rocks/cards
 
