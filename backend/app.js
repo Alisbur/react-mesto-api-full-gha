@@ -66,6 +66,7 @@ app.use((err, req, res, next) => {
       message: statusCode === 500
         ? 'На сервере произошла ошибка'
         : message,
+      err.stack,
     });
 });
 
